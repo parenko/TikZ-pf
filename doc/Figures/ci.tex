@@ -1,0 +1,19 @@
+\begin{tikzpicture}
+
+	\domain[x=0,y=0,type=machine]{m}{Answering machine};
+	\domain[x=5,y=1.3,type=casualDomain]{rw}{Real world};
+	\domain[x=5,y=0,type=casualDomain]{d}{Display};
+	\domain[x=5,y=-1.3,type=biddableDomain]{eo}{Enquiry operator};
+
+	\connects[xshift=-2mm]{m}{rw}{RW!C1}
+	\connects{m}{d}{AM!E3}
+	\connects[label position=below,xshift=-2mm]{m}{eo}{EO!E5}
+
+	\requirement[x=10,y=0]{r}{Answer rules};
+
+	\refers{r}{rw}{C2}
+	\constrains{r}{d}{Y4}
+	\refers[label position=below]{r}{eo}{E5}
+
+\end{tikzpicture}
+

@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+
+	\domain[x=0,y=0,type=machine]{m}{Control machine};
+	\domain[x=5,y=0,type=casualDomain]{cd}{Controlled Domain};
+
+	\connects[yshift=-12pt]{m}{cd}{CM!C1\\ CD!C2}
+
+	\requirement[x=10,y=0]{r}{Required behaviour};
+
+	\constrains{r}{cd}{C3}
+
+\end{tikzpicture}
+

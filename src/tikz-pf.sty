@@ -1,0 +1,187 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Start of tikz-pf.sty
+%
+% Some macros for Context Diagrams and Problem Diagrams.
+% Home page of project : 
+% Author: Paul Parenko
+% Style from : 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]%
+\ProvidesPackage{tikz-pf}[2016/02/10]%
+%\ProvidesPackage{Lib/tikz-pf}[2016/02/10]%
+%
+\RequirePackage{tikz}%
+\RequirePackage{calc}%
+\usetikzlibrary{positioning,shapes,shapes.multipart,arrows,arrows.meta}%
+
+
+\pgfkeys{/tikzpf/.cd,%
+	font/.initial=\small,
+}
+
+\pgfkeys{/tikzpf/.cd,%
+	font/.get=\tikzpfFont,
+}
+
+\makeatletter
+\def\tikzsavelastnodename#1{\let#1=\tikz@last@fig@name}
+\makeatother
+
+\pgfkeys{%
+	/tikzpf/domain/.style={%
+	    draw, thin, align=flush center,%
+	    minimum size=3em, text width=4em, inner xsep=1em,%
+	    append after command={\pgfextra{\tikzsavelastnodename\tikzsavednodename}},#1%
+	},%
+	/tikzpf/domainType/.style 2 args={%
+	    append after command =%
+	    {node[draw,thin,minimum size=3mm,%
+	          inner sep=2pt] at (\tikzsavednodename.#1) [anchor=#1] {#2}}%
+	},%
+	/tikzpf/domain/casual/.style={%
+		/tikzpf/domain,/tikzpf/domainType={south east}{C}
+	},%
+	/tikzpf/domain/lexical/.style={%
+		/tikzpf/domain,/tikzpf/domainType={south east}{X}
+	},%
+	/tikzpf/domain/biddable/.style={%
+		/tikzpf/domain,/tikzpf/domainType={south east}{B}
+	},%
+    /tikzpf/domain/designed/.style={/tikzpf/domain,append after command={\pgfextra{
+        \draw[thin, font=\tikzpfFont] (\tikzlastnode.south west)++(0,.5\pgflinewidth) --++ (-2.5mm,0) |- ($(\tikzlastnode.north west)+(0,-.5\pgflinewidth)$);
+    }}},
+	/tikzpf/domain/machine/.style={/tikzpf/domain,append after command={\pgfextra{
+		%inner xsep=.3333em+3mm,
+        \draw[thin, font=\tikzpfFont] (\tikzlastnode.south west)++(0,.5\pgflinewidth) --++ (-2.5mm,0) |- ($(\tikzlastnode.north west)+(0,-.5\pgflinewidth)$);
+        \draw[thin, font=\tikzpfFont] (\tikzlastnode.south west)++(0,.5\pgflinewidth) --++ (-5mm,0) |- ($(\tikzlastnode.north west)+(0,-.5\pgflinewidth)$);
+    }}},
+	/tikzpf/requirement/.style={%
+	    draw, thin, align=flush center,%
+	    minimum size=3em, text width=4.5em, inner xsep=1mm,%
+		ellipse, dashed%
+	},%
+	/tikzpf/edge/.style={%
+	    inner sep=.7em,align=flush center,%
+	},%
+	/tikzpf/connects/.style={%
+	    /tikzpf/edge,-%
+	},%
+	/tikzpf/refers/.style={%
+	    /tikzpf/edge,dashed, -%
+	},%
+	/tikzpf/constrains/.style={%
+	    /tikzpf/edge,dashed, ->, >=angle 45%
+	},%
+}% end of pgfkeys
+
+\newcommand{\requirement}[3][]{
+	\pgfkeys{/tikzpf/requirement/.cd,%
+		x/.initial=0, y/.initial=0,
+		.unknown/.code={%
+		\let\keyname=\pgfkeyscurrentname%
+		\errmessage{TIKZPF ERROR : in requirement, invalid option \keyname}%
+	}}%
+	\pgfkeys{/tikzpf/requirement/.cd,#1}%
+	\pgfkeys{/tikzpf/requirement/.cd,%
+		x/.get=\tikzpfX, y/.get=\tikzpfY}
+	\def\tikzpfReqNodeName{#2}
+	\def\tikzpfReqPos{\tikzpfX,\tikzpfY}%
+	\def\tikzpfReqName{#3}%
+	\node (\tikzpfReqNodeName) [/tikzpf/requirement,font=\tikzpfFont] at (\tikzpfReqPos)  {\tikzpfReqName};%
+}
+
+\newcommand{\domain}[3][]{
+	\pgfkeys{/tikzpf/domain/.cd,%
+		x/.initial=0, y/.initial=0,type/.initial=domain,
+		.unknown/.code={%
+		\let\keyname=\pgfkeyscurrentname%
+		\errmessage{TIKZPF ERROR : in domain, invalid option \keyname}%
+	}}%
+	\pgfkeys{/tikzpf/domain/.cd,#1}%
+	\pgfkeys{/tikzpf/domain/.cd,%
+		x/.get=\tikzpfX, y/.get=\tikzpfY, type/.get=\tikzpfDomainType,}
+	\def\tikzpfDomainNodeName{#2}
+	\def\tikzpfDomainPos{\tikzpfX,\tikzpfY}%
+	\def\tikzpfDomainName{#3}%
+	%
+
+	\def\tikzpfDomainStyle{/tikzpf/domain}%
+	
+	
+	\def\tmp{machine}%
+	\ifx\tikzpfDomainType\tmp%
+			\def\tikzpfDomainStyle{/tikzpf/domain/machine}%
+			\else\def\tmp{designed}%
+			\ifx\tikzpfDomainType\tmp%
+				\def\tikzpfDomainStyle{/tikzpf/domain/designed}
+				\else\def\tmp{casual}%
+					\ifx\tikzpfDomainType\tmp%
+						\def\tikzpfDomainStyle{/tikzpf/domain/casual}
+						\else\def\tmp{lexical}%
+							\ifx\tikzpfDomainType\tmp%
+								\def\tikzpfDomainStyle{/tikzpf/domain/lexical}
+								\else\def\tmp{biddable}%
+									\ifx\tikzpfDomainType\tmp%
+										\def\tikzpfDomainStyle{/tikzpf/domain/biddable}
+									\fi%
+							\fi%
+					\fi%
+			\fi%
+	\fi%
+
+	\node (\tikzpfDomainNodeName) [\tikzpfDomainStyle,font=\tikzpfFont] at (\tikzpfDomainPos)  {\tikzpfDomainName};%
+}
+
+\newcommand{\tikzpfConn}[4][]{
+	\pgfkeys{/tikzpf/con/.cd,%
+		type/.initial={-}, label position/.initial=above, xshift/.initial=0, yshift/.initial=0, 
+		.unknown/.code={%
+		\let\keyname=\pgfkeyscurrentname%
+		\errmessage{TIKZPF ERROR : in \tikzpfConn, invalid option \keyname}%
+	}}%
+	\pgfkeys{/tikzpf/con/.cd,#1}%
+	\pgfkeys{/tikzpf/con/.cd,%
+		type/.get=\tikzpfConArcType,
+		label position/.get=\tikzConnectsLabelPosition, xshift/.get=\tikzpfLabelXshift, yshift/.get=\tikzpfLabelYshift, 
+	}%
+	\def\tikzpfConSourceNode{#2}
+	\def\tikzpfConTargetNode{#3}%
+	\def\tikzpfConName{#4}%
+
+	\def\tmp{connects}%
+	\ifx\tikzpfConArcType\tmp%
+		\def\tikzpfConArcType{/tikzpf/connects}
+		\else\def\tmp{refers}%
+		\ifx\tikzpfConArcType\tmp%
+			\def\tikzpfConArcType{/tikzpf/refers}
+			\else\def\tmp{constrains}%
+			\ifx\tikzpfConArcType\tmp%
+				\def\tikzpfConArcType{/tikzpf/constrains}
+				\else
+				\def\tikzpfConArcType{/tikzpf/connects}
+			\fi
+		\fi
+	\fi
+	\def\tikzpfConArcTypeStyle{\tikzpfConArcType}%
+
+	\draw[\tikzpfConArcTypeStyle] (\tikzpfConSourceNode) --
+	node[swap,\tikzConnectsLabelPosition, xshift=\tikzpfLabelXshift, yshift=\tikzpfLabelYshift,font=\tikzpfFont]
+	{\tikzpfConName} (\tikzpfConTargetNode);
+}
+
+\newcommand{\connects}[4][]{
+	\tikzpfConn[type=connects,#1]{#2}{#3}{#4}
+}
+
+\newcommand{\refers}[4][]{
+	\tikzpfConn[type=refers,#1]{#2}{#3}{#4}
+}
+
+\newcommand{\constrains}[4][]{
+	\tikzpfConn[type=constrains,#1]{#2}{#3}{#4}
+}
+
+
+%%% End of tikz-pf.sty
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

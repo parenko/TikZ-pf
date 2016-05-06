@@ -1,0 +1,16 @@
+\begin{tikzpicture}
+
+	\domain[x=0,y=0,type=machine]{m}{Editor};
+	\domain[x=5,y=.7,type=lexicalDomain]{w}{Workpieces};
+	\domain[x=5,y=-.7,type=biddableDomain]{u}{User};
+
+	\connects{m}{w}{E!E1\\ WP!Y2}
+	\connects[label position=below]{m}{u}{U!E3}
+
+	\requirement[x=10,y=0]{r}{Command effects};
+
+	\constrains{r}{w}{Y4}
+	\refers[label position=below]{r}{u}{E3}
+
+\end{tikzpicture}
+

@@ -1,0 +1,16 @@
+\begin{tikzpicture}
+
+	\domain[x=0,y=0,type=machine]{m}{Transform machine};
+	\domain[x=5,y=.7,type=lexicalDomain]{i}{Inputs};
+	\domain[x=5,y=-.7,type=lexicalDomain]{o}{Outputs};
+
+	\connects{m}{i}{I!Y1}
+	\connects[label position=below]{m}{o}{TM!Y2}
+
+	\requirement[x=10,y=0]{r}{IO relation};
+
+	\constrains[label position=below]{r}{o}{Y4}
+	\refers{r}{i}{Y3}
+
+\end{tikzpicture}
+

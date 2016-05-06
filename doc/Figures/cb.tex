@@ -1,0 +1,16 @@
+\begin{tikzpicture}
+
+	\domain[x=0,y=0,type=machine]{m}{Control machine};
+	\domain[x=5,y=.7,type=casualDomain]{cd}{Controlled Domain};
+	\domain[x=5,y=-.7,type=biddableDomain]{o}{Operator};
+
+	\connects{m}{cd}{CM!C1\\ CD!C2}
+	\connects[label position=below]{m}{o}{O!E4}
+
+	\requirement[x=10,y=0]{r}{Commanded behaviour};
+
+	\constrains{r}{cd}{C3}
+	\refers[label position=below]{r}{o}{E4}
+
+\end{tikzpicture}
+
