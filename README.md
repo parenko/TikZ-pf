@@ -7,15 +7,18 @@ The **tikz-pf** package provides commands to simply create diagrams in TikZ envi
 ```
 \usepackage{tikz}
 \usetikzlibrary{calc}
-\usepackage{../src/tikz-pf}
+\usepackage{tikz-pf}
+% you can also put this package in a sub directory like Lib and use
+%\usepackage{Lib/tikz-pf}
 ```
 
 ## Examples
-Currently the documentation is provided as a [PDF](https://raw.githubusercontent.com/parenko/TikZpf/master/doc/Documentation.pdf).
+Currently the [documentation][pdf] is provided as a PDF.
 
 License
 ----
 Gnu Affero 3.0
 
-   [sty]: <https://github.com/parenko/TikZpf/master/src/tikz-pf.sty>
+   [pdf]: <https://github.com/parenko/TikZ-pf/blob/master/doc/Documentation.pdf>
+   [sty]: <https://github.com/parenko/TikZ-pf/blob/master/src/tikz-pf.sty>
 
